@@ -53,6 +53,7 @@
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -65,7 +66,7 @@
       <option name="presentableId" value="Default" />
       <updated>1745930574396</updated>
       <workItem from="1745930575541" duration="1905000" />
-      <workItem from="1746024870542" duration="1599000" />
+      <workItem from="1746024870542" duration="2320000" />
     </task>
     <servers />
   </component>
