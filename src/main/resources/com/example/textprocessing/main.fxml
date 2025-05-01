@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="474.0" prefWidth="699.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TextArea fx:id="InsertField" layoutX="14.0" layoutY="22.0" prefHeight="73.0" prefWidth="655.0" promptText="Insert Text Here...." />
-      <TextArea fx:id="RegexField" layoutX="14.0" layoutY="211.0" prefHeight="157.0" prefWidth="655.0" />
-      <TextField fx:id="ResultsField" layoutX="14.0" layoutY="120.0" prefHeight="46.0" prefWidth="269.0" promptText="Insert Regex" />
-      <Button fx:id="SearchButton" layoutX="308.0" layoutY="127.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="114.0" text="Search" />
-      <Button fx:id="RepalceAllButton" layoutX="433.0" layoutY="127.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="114.0" text="Replace All" />
-      <Button fx:id="LoadFileButton" layoutX="555.0" layoutY="127.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="114.0" text="Load File" />
+      <TextArea fx:id="InsertField" layoutX="14.0" layoutY="22.0" prefHeight="73.0" prefWidth="655.0" promptText="Insert Text Here...." wrapText="true" />
+      <TextArea fx:id="ResultsField" layoutX="14.0" layoutY="226.0" prefHeight="157.0" prefWidth="655.0" promptText="Results" wrapText="true" />
+      <TextField fx:id="RegexField" layoutX="14.0" layoutY="106.0" prefHeight="41.0" prefWidth="229.0" promptText="Insert Regex" />
+      <Button fx:id="SearchButton" layoutX="293.0" layoutY="111.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="114.0" text="Search" />
+      <Button fx:id="RepalceAllButton" layoutX="293.0" layoutY="163.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="114.0" text="Replace All" />
+      <Button fx:id="LoadFileButton" layoutX="434.0" layoutY="131.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="114.0" text="Load File" />
+      <Label alignment="CENTER" layoutX="25.0" layoutY="410.0" prefHeight="31.0" prefWidth="88.0" text="Status:">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <Label fx:id="StatusLabel" layoutX="118.0" layoutY="410.0" prefHeight="31.0" prefWidth="380.0" textFill="#00ff0e" />
+      <TextField fx:id="ReplaceField" layoutX="14.0" layoutY="158.0" prefHeight="41.0" prefWidth="229.0" promptText="Replace Text" />
    </children>
 </AnchorPane>
