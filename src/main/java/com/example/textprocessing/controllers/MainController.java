@@ -1,5 +1,9 @@
 package com.example.textprocessing.controllers;
 
+import com.example.textprocessing.models.textprocessing.TextProcessor;
+import com.example.textprocessing.models.textprocessing.FileOperations;
+import com.example.textprocessing.AlertUtils;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.io.File;
