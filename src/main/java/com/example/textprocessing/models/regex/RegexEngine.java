@@ -26,7 +26,7 @@ public class RegexEngine {
             ));
         }
 
-        return new RegexResults(matches);
+        return new RegexResults(pattern.toString(), matches);
     }
 
     public String executeReplace(String text, String replacement) {

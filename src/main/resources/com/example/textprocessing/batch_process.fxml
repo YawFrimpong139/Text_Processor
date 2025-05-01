@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane hgap="10" stylesheets="@style.css" vgap="10" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.textprocessing.controllers.BatchProcessController">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+
+    <Label text="Input Directory:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+    <TextField fx:id="inputDirField" promptText="Input directory" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+    <Button onAction="#handleInputDirBrowse" text="Browse..." GridPane.columnIndex="2" GridPane.rowIndex="0" />
+
+    <Label text="Output Directory:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+    <TextField fx:id="outputDirField" promptText="Output directory" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <Button onAction="#handleOutputDirBrowse" text="Browse..." GridPane.columnIndex="2" GridPane.rowIndex="1" />
+
+    <Label text="File Pattern:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+    <TextField fx:id="filePatternField" promptText="File pattern (e.g., *.txt)" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+
+    <Label text="Regex Pattern:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+    <TextField fx:id="regexField" promptText="Regex pattern" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+
+    <Label text="Replacement:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+    <TextField fx:id="replaceField" promptText="Replacement text" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+
+    <CheckBox fx:id="recursiveCheckBox" text="Process subdirectories" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+    <ProgressBar fx:id="progressBar" visible="false" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="6" />
+
+    <Label fx:id="statusLabel" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="7" />
+
+    <HBox alignment="CENTER_RIGHT" spacing="10" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="8">
+        <Button onAction="#handleProcess" style="-fx-base: #4CAF50; -fx-text-fill: white;" text="Process" />
+        <Button onAction="#handleCancel" style="-fx-base: #f44336; -fx-text-fill: white;" text="Cancel" />
+    </HBox>
+    <columnConstraints>
+        <ColumnConstraints />
+        <ColumnConstraints />
+        <ColumnConstraints />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+    </rowConstraints>
+</GridPane>

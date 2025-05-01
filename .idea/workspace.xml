@@ -6,9 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="55c9743f-e5cc-4292-8f0e-f6a47d727f5e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/textprocessing/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/textprocessing/MainApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/textprocessing/MainApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/textprocessing/MainApp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/textprocessing/controllers/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/textprocessing/controllers/MainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/textprocessing/models/regex/RegexEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/textprocessing/models/regex/RegexEngine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/textprocessing/models/regex/RegexResults.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/textprocessing/models/regex/RegexResults.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/textprocessing/main.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/textprocessing/main.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -20,6 +21,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="FxmlFile" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -38,7 +41,8 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "feat/Regex__Module",
+    "git-widget-placeholder": "main",
+    "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",

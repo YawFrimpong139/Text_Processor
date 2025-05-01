@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="10" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.textprocessing.controllers.WordFrequencyController">
+    <padding>
+        <Insets bottom="10" left="10" right="10" top="10" />
+    </padding>
+
+    <TableView fx:id="wordFrequencyTable" prefHeight="400">
+        <columns>
+            <TableColumn fx:id="wordColumn" prefWidth="200" text="Word" />
+            <TableColumn fx:id="countColumn" prefWidth="100" text="Count" />
+        </columns>
+    </TableView>
+</VBox>

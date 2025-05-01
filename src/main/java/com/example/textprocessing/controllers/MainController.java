@@ -175,7 +175,7 @@ public class MainController {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dataflow/views/word_frequency.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/textprocessing/word_frequency.fxml"));
             Parent root = loader.load();
 
             WordFrequencyController controller = loader.getController();
@@ -195,7 +195,7 @@ public class MainController {
     @FXML
     private void handleBatchProcess() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dataflow/views/batch_process.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/textprocessing/batch_process.fxml"));
             Parent root = loader.load();
 
             BatchProcessController controller = loader.getController();
