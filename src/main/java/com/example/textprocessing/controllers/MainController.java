@@ -2,128 +2,301 @@ package com.example.textprocessing.controllers;
 
 import com.example.textprocessing.models.textprocessing.TextProcessor;
 import com.example.textprocessing.models.textprocessing.FileOperations;
+import com.example.textprocessing.models.datamanagement.DataManager;
 import com.example.textprocessing.AlertUtils;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.io.File;
-import java.nio.file.Files;
-
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import java.io.File;
+import java.io.IOException;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 
 public class MainController {
+    @FXML private TextArea inputTextArea;
+    @FXML private TextArea outputTextArea;
+    @FXML private TextField regexPatternField;
+    @FXML private TextField replacementField;
+    @FXML private ComboBox<String> operationComboBox;
+    @FXML private ComboBox<String> fileEncodingComboBox;
+    @FXML private CheckBox caseSensitiveCheckBox;
+    @FXML private CheckBox multilineCheckBox;
+    @FXML private CheckBox dotAllCheckBox;
+    @FXML private Label statusLabel;
+
+    private final TextProcessor textProcessor = new TextProcessor();
+    private final DataManager dataManager = new DataManager();
+    private final FileOperations fileProcessor = new FileOperations();
+    private Stage primaryStage;
+
+    private static final String[] OPERATIONS = {
+            "Find Matches", "Replace All", "Extract Matches", "Word Frequency"
+    };
+
+    private static final String[] ENCODINGS = {
+            "UTF-8", "ISO-8859-1", "Windows-1252", "UTF-16"
+    };
 
     @FXML
-    private ResourceBundle resources;
+    public void initialize() {
+        operationComboBox.getItems().addAll(OPERATIONS);
+        operationComboBox.setValue(OPERATIONS[0]);
 
-    @FXML
-    private URL location;
-
-    @FXML
-    private TextArea InsertField;
-
-    @FXML
-    private Button LoadFileButton;
-
-    @FXML
-    private Label StatusLabel;
-
-    @FXML
-    private TextField RegexField;
-
-    @FXML
-    private Button RepalceAllButton;
-
-    @FXML
-    private TextField ReplaceField;
-
-    @FXML
-    private TextArea ResultsField;
-
-    @FXML
-    private Button SearchButton;
-
-
-    @FXML
-    private void handleSearch(){
-        String text = InsertField.getText();
-        String regex = RegexField.getText();
-
-
-        if(text.isEmpty() || regex.isEmpty()){
-            StatusLabel.setText("Error: Input text and Regular Expression Required ");
-            return;
-        }
-
-        try{
-            ResultsField.setText(String.join("\n", RegPattern.findAllMatches(text, regex)));
-            StatusLabel.setText("Search Completed!!");
-        }catch(Exception e){
-            StatusLabel.setText("Error: " + e.getMessage());
-        }
+        fileEncodingComboBox.getItems().addAll(ENCODINGS);
+        fileEncodingComboBox.setValue(ENCODINGS[0]);
     }
 
-
-    @FXML
-    private void handleReplace(){
-        String text = InsertField.getText();
-        String regex = RegexField.getText();
-        String replacement = ReplaceField.getText();
-
-
-        if(text.isEmpty() || regex.isEmpty() || replacement.isEmpty()){
-            StatusLabel.setText("Error: Kindly check your inputs");
-            return;
-        }
-
-        try{
-            ResultsField.setText(RegPattern.replaceAll(text, regex, replacement));
-            StatusLabel.setText("Replacement Completed!!");
-        }catch(Exception e){
-            StatusLabel.setText("Error: " + e.getMessage());
-        }
-
-
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 
     @FXML
-    private void handleLoadFile(){
+    private void handleExecute() {
+        String text = inputTextArea.getText();
+        String pattern = regexPatternField.getText();
+        String operation = operationComboBox.getValue();
+
+        if (text.isEmpty()) {
+            AlertUtils.showError("Input Error", "Please enter text or load a file first.");
+            return;
+        }
+
+        if ((operation.equals("Find Matches") || operation.equals("Replace All") ||
+                operation.equals("Extract Matches")) && pattern.isEmpty()) {
+            AlertUtils.showError("Pattern Error", "Please enter a regex pattern for this operation.");
+            return;
+        }
+
+        try {
+            int flags = getRegexFlags();
+            String result = "";
+
+            switch (operation) {
+                case "Find Matches":
+                    result = textProcessor.executeRegexOperation(
+                            text, pattern, flags, TextProcessor.RegexOperation.FIND
+                    );
+                    break;
+
+                case "Replace All":
+                    result = textProcessor.executeRegexOperation(
+                            text, pattern, flags,
+                            TextProcessor.RegexOperation.REPLACE.withReplacement(replacementField.getText())
+                    );
+                    dataManager.processText(result);
+                    break;
+
+                case "Extract Matches":
+                    result = textProcessor.executeRegexOperation(
+                            text, pattern, flags, TextProcessor.RegexOperation.EXTRACT
+                    );
+                    dataManager.processText(result);
+                    break;
+
+                case "Word Frequency":
+                    dataManager.processText(text);
+                    result = dataManager.getSortedWordData().stream()
+                            .map(w -> w.getWord() + ": " + w.getCount())
+                            .collect(Collectors.joining("\n"));
+                    break;
+            }
+
+            outputTextArea.setText(result);
+            statusLabel.setText("Operation completed successfully");
+        } catch (PatternSyntaxException e) {
+            AlertUtils.showError("Regex Error", "Invalid regular expression pattern: " + e.getMessage());
+            statusLabel.setText("Error in regex pattern");
+        } catch (Exception e) {
+            AlertUtils.showError("Processing Error", "An error occurred during processing: " + e.getMessage());
+            statusLabel.setText("Error during processing");
+        }
+    }
+
+    @FXML
+    private void handleOpenFile() {
         FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Text File");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Text Files", "*.txt", "*.csv", "*.log", "*.xml", "*.json"));
 
-        fileChooser.setTitle("Open Text file");
-        File file = fileChooser.showOpenDialog(InsertField.getScene().getWindow());
-
-        if(file != null){
-            try{
-                InsertField.setText(Files.readString(file.toPath()));
-                StatusLabel.setText("Loaded: " + file.getName());
-            }catch(Exception e){
-                StatusLabel.setText("Error loading file: " + e.getMessage());
+        File selectedFile = fileChooser.showOpenDialog(primaryStage);
+        if (selectedFile != null) {
+            try {
+                String encoding = fileEncodingComboBox.getValue();
+                String content = fileProcessor.readFile(selectedFile, encoding);
+                inputTextArea.setText(content);
+                statusLabel.setText("File loaded: " + selectedFile.getName());
+            } catch (IOException e) {
+                AlertUtils.showError("File Error", "Could not read file: " + e.getMessage());
+                statusLabel.setText("Error loading file");
             }
         }
-
-
-
     }
 
     @FXML
-    void initialize() {
-        assert InsertField != null : "fx:id=\"InsertField\" was not injected: check your FXML file 'main.fxml'.";
-        assert LoadFileButton != null : "fx:id=\"LoadFileButton\" was not injected: check your FXML file 'main.fxml'.";
-        assert StatusLabel != null : "fx:id=\"StatusLabel\" was not injected: check your FXML file 'main.fxml'.";
-        assert RegexField != null : "fx:id=\"RegexField\" was not injected: check your FXML file 'main.fxml'.";
-        assert RepalceAllButton != null : "fx:id=\"RepalceAllButton\" was not injected: check your FXML file 'main.fxml'.";
-        assert ResultsField != null : "fx:id=\"ResultsField\" was not injected: check your FXML file 'main.fxml'.";
-        assert SearchButton != null : "fx:id=\"SearchButton\" was not injected: check your FXML file 'main.fxml'.";
+    private void handleSaveOutput() {
+        if (outputTextArea.getText().isEmpty()) {
+            AlertUtils.showError("Save Error", "No output to save.");
+            return;
+        }
 
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Output");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+
+        File selectedFile = fileChooser.showSaveDialog(primaryStage);
+        if (selectedFile != null) {
+            try {
+                fileProcessor.saveFile(selectedFile, outputTextArea.getText(),
+                        fileEncodingComboBox.getValue());
+                statusLabel.setText("Output saved to: " + selectedFile.getName());
+            } catch (IOException e) {
+                AlertUtils.showError("Save Error", "Could not save file: " + e.getMessage());
+                statusLabel.setText("Error saving file");
+            }
+        }
     }
 
+    @FXML
+    private void handleWordFrequencyAnalysis() {
+        if (dataManager.getSortedWordData().isEmpty()) {
+            AlertUtils.showError("Analysis Error",
+                    "No word frequency data available. Run Word Frequency operation first.");
+            return;
+        }
 
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dataflow/views/word_frequency.fxml"));
+            Parent root = loader.load();
 
+            WordFrequencyController controller = loader.getController();
+            controller.setWordFrequencyData(dataManager.getWordFrequencyMap());
+
+            Stage dialog = new Stage();
+            dialog.setTitle("Complete Word Frequency Analysis");
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.initOwner(primaryStage);
+            dialog.setScene(new Scene(root));
+            dialog.show();
+        } catch (IOException e) {
+            AlertUtils.showError("Error", "Could not open word frequency dialog: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleBatchProcess() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dataflow/views/batch_process.fxml"));
+            Parent root = loader.load();
+
+            BatchProcessController controller = loader.getController();
+            controller.setPrimaryStage(primaryStage);
+            controller.setFileProcessor(fileProcessor);
+            controller.setRegexPattern(regexPatternField.getText());
+            controller.setReplacementText(replacementField.getText());
+            controller.setEncoding(fileEncodingComboBox.getValue());
+            controller.setRegexFlags(getRegexFlags());
+
+            Stage dialog = new Stage();
+            dialog.setTitle("Batch Process Files");
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.initOwner(primaryStage);
+            dialog.setScene(new Scene(root));
+            dialog.show();
+        } catch (IOException e) {
+            AlertUtils.showError("Error", "Could not open batch process dialog: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleRegexHelp() {
+        String content = "Common Regex Patterns:\n\n" +
+                "Literal characters: match themselves\n" +
+                "  Example: 'cat' matches \"cat\"\n\n" +
+                "Character classes:\n" +
+                "  [abc] - a, b, or c\n" +
+                "  [^abc] - Any character except a, b, or c\n" +
+                "  [a-z] - Any lowercase letter\n" +
+                "  [A-Z] - Any uppercase letter\n" +
+                "  [0-9] - Any digit\n" +
+                "  \\d - Any digit (same as [0-9])\n" +
+                "  \\w - Any word character (letter, digit, underscore)\n" +
+                "  \\s - Any whitespace character\n\n" +
+                "Quantifiers:\n" +
+                "  ? - Zero or one\n" +
+                "  * - Zero or more\n" +
+                "  + - One or more\n" +
+                "  {n} - Exactly n times\n" +
+                "  {n,} - At least n times\n" +
+                "  {n,m} - Between n and m times\n\n" +
+                "Anchors:\n" +
+                "  ^ - Start of line (or string in multiline mode)\n" +
+                "  $ - End of line (or string in multiline mode)\n" +
+                "  \\b - Word boundary\n\n" +
+                "Groups and Alternation:\n" +
+                "  (abc) - Capturing group\n" +
+                "  (?:abc) - Non-capturing group\n" +
+                "  a|b - Match either a or b\n\n" +
+                "Escaping special characters with \\: . * + ? ^ $ { } [ ] ( ) | \\";
+
+        AlertUtils.showInformation("Regex Help", "Regular Expression Quick Reference", content);
+    }
+
+    @FXML
+    private void handleAbout() {
+        String content = "Version 1.0\n\n" +
+                "This application provides advanced text processing capabilities including:\n" +
+                "- Regular expression search and replace\n" +
+                "- Batch file processing\n" +
+                "- Word frequency analysis\n" +
+                "- Efficient handling of large text files\n\n" +
+                "Developed for DataFlow Solutions to automate text processing workflows.";
+
+        AlertUtils.showInformation("About", "DataFlow Solutions - Text Processing System", content);
+    }
+
+    @FXML
+    private void handleClearOutput() {
+        outputTextArea.clear();
+        statusLabel.setText("Output cleared");
+    }
+
+    @FXML
+    private void handleClearAll() {
+        inputTextArea.clear();
+        outputTextArea.clear();
+        regexPatternField.clear();
+        replacementField.clear();
+        dataManager.clearAllData();
+        statusLabel.setText("All cleared");
+    }
+
+    @FXML
+    private void handleExit() {
+        Stage stage = (Stage) inputTextArea.getScene().getWindow();
+        stage.close();
+    }
+
+    private int getRegexFlags() {
+        int flags = 0;
+        if (!caseSensitiveCheckBox.isSelected()) {
+            flags |= Pattern.CASE_INSENSITIVE;
+        }
+        if (multilineCheckBox.isSelected()) {
+            flags |= Pattern.MULTILINE;
+        }
+        if (dotAllCheckBox.isSelected()) {
+            flags |= Pattern.DOTALL;
+        }
+        return flags;
+    }
 }
